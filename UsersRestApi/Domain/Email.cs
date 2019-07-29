@@ -8,7 +8,7 @@ namespace UsersRestApi.Domain
     /// <summary>
     /// A value object
     /// </summary>
-    public class Email
+    public class Email : ValueObject
     {
         public Email(string address)
         {
@@ -16,5 +16,11 @@ namespace UsersRestApi.Domain
         }
 
         public string Address { get; private set; }
+
+        protected override IEnumerable<object> GetAtomicValues()
+        {
+            // Using a yield return statement to return each element one at a time
+            yield return Address;
+        }
     }
 }
