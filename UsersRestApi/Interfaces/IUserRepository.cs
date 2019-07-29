@@ -10,6 +10,6 @@ namespace UsersRestApi.Interfaces
     {
         void Add(User user);
 
-        User Select(ISpecification<User> spec);
+        User Single(ISpecification<User> spec);
     }
 }

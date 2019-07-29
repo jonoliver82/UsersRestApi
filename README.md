@@ -11,4 +11,6 @@ The project incorporates ideas from:
 * [Visit your domain objects to keep ’em legit!](https://blog.pragmatists.com/visit-your-domain-objects-to-keep-em-legit-6b5d43e98ef0)
 * [Specification Pattern](https://deviq.com/specification-pattern/)
 * [Entity types with constructors](https://docs.microsoft.com/en-us/ef/core/modeling/constructors)
+* [Implement value objects](https://docs.microsoft.com/en-us/dotnet/standard/microservices-architecture/microservice-ddd-cqrs-patterns/implement-value-objects)
 
+https://github.com/aspnet/EntityFrameworkCore/issues/11666

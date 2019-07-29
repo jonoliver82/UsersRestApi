@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using UsersRestApi.Domain;
 using UsersRestApi.Interfaces;
 using UsersRestApi.Models;
 
@@ -19,21 +20,19 @@ namespace UsersRestApi.Controllers
     public class UsersController : Controller
     {
         private readonly IUserRepository _userRepository;
-        private readonly IUserIdFactory _userIdFactory;
         private readonly IUsersFinderService _usersFinderService;
 
-        public UsersController(IUserRepository userRepository, IUserIdFactory userIdFactory, IUsersFinderService usersFinderService)
+        public UsersController(IUserRepository userRepository, IUsersFinderService usersFinderService)
         {
             _userRepository = userRepository;
-            _userIdFactory = userIdFactory;
             _usersFinderService = usersFinderService;
         }
 
         // GET api/<controller>/5
         [HttpGet("{id}")]
-        public ActionResult<string> Get(string id)
+        public ActionResult<Email> GetEmail(int id)
         {
-            return Ok(_usersFinderService.FindUserEmailById(UserId.Of(id)).ToString());
+            return Ok(_usersFinderService.FindUserEmailById(id));
         }
 
         // POST api/<controller>
@@ -41,9 +40,9 @@ namespace UsersRestApi.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         public ActionResult<UserCreationResponse> Post([FromBody]UserCreationRequest value)
         {
-            var newUser = new User(_userIdFactory.Create(), new Email(value.Email), new Password(value.Password));
+            var newUser = new User(value.Name, new Email(value.Email), new Password(value.Password));
             _userRepository.Add(newUser);
-            return CreatedAtAction(nameof(Get), UserCreationResponse.Success(newUser.Id.ToString()));
+            return CreatedAtAction(nameof(GetEmail), UserCreationResponse.Success(newUser.Id));
         }
     }
 }

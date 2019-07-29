@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using UsersRestApi.Domain;
 using UsersRestApi.Interfaces;
 using UsersRestApi.Models;
 using UsersRestApi.Specifications;
@@ -17,10 +18,12 @@ namespace UsersRestApi.Services
             _repository = repository;
         }
 
-        public Email FindUserEmailById(UserId id)
+        // TODO return a Maybe<Email>
+        public Email FindUserEmailById(int id)
         {
-            var user = _repository.Select(new UserSpecification(id));
-            return user.Email;
+            // Simple specification object
+            var user = _repository.Single(new UserIdSpecification(id));
+            return user?.Email ?? new Email(string.Empty);
         }
     }
 }

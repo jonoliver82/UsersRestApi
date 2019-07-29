@@ -22,7 +22,7 @@ namespace UsersRestApi.Repositories
             _context.SaveChanges();
         }
 
-        public User Select(ISpecification<User> spec)
+        public User Single(ISpecification<User> spec)
         {
             return _context.Set<User>().SingleOrDefault(spec.Criteria);
         }

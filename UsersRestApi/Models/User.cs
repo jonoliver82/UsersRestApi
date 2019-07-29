@@ -2,26 +2,29 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using UsersRestApi.Domain;
 
 namespace UsersRestApi.Models
 {
     public class User
     {
-        private readonly UserId _id;
-        private readonly Email _email;
-        private readonly Password _password;
-
-        public User(UserId id, Email email, Password password)
+        public User()
         {
-            _id = id;
-            _email = email;
-            _password = password;
         }
 
-        public UserId Id => _id;
+        public User(string name, Email email, Password password)
+        {
+            Name = name;
+            Email = email;
+            Password = password;
+        }
 
-        public Email Email => _email;
+        public int Id { get; set; }
 
-        public Password Password => _password;
+        public string Name { get; set; }
+
+        public Email Email { get; private set; }
+
+        public Password Password { get; private set; }
     }
 }

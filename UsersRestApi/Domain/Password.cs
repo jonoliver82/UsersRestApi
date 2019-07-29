@@ -3,18 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace UsersRestApi.Models
+namespace UsersRestApi.Domain
 {
     /// <summary>
     /// A value object
     /// </summary>
-    public class Email
+    public class Password
     {
-        private readonly string _email;
-
-        public Email(string email)
+        public Password(string value)
         {
-            _email = email;
+            Value = value;
         }
+
+        public string Value { get; private set; }
     }
 }

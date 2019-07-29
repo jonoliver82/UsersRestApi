@@ -11,7 +11,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using UsersRestApi.Factories;
 using UsersRestApi.Interfaces;
 using UsersRestApi.Models;
 using UsersRestApi.Repositories;
@@ -37,7 +36,6 @@ namespace UsersRestApi
             services.AddDbContext<UsersContext>(opt => opt.UseInMemoryDatabase("Users"));
 
             // Register our other classes for Dependency Injection
-            services.AddScoped<IUserIdFactory, GuidBasedUserIdFactory>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUsersFinderService, UsersFinderService>();
         }
@@ -57,6 +55,13 @@ namespace UsersRestApi
 
             app.UseHttpsRedirection();
             app.UseMvc();
+
+            // Ensure InMemory database seeding
+            using (var scope = app.ApplicationServices.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetService<UsersContext>();
+                context.Database.EnsureCreated();
+            }
         }
     }
 }

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using UsersRestApi.Domain;
 
 namespace UsersRestApi.Models
 {
@@ -11,28 +12,36 @@ namespace UsersRestApi.Models
         public UsersContext(DbContextOptions<UsersContext> options)
             : base(options)
         {
-            AddTestData();
         }
 
         public DbSet<User> Users { get; set; }
 
-        private void AddTestData()
-        {
-            //var user = new User(new UserId("820E7478-D257-44DF-AB76-F286F1D1494C"), new Email("1@example.com"), new Password("password"));
-            //Users.Add(user);
-        }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            // The User type has readonly properties that will not be automatically mapped by EF Core,
-            // so explicitly map the properties here
-            modelBuilder.Entity<User>(
-                builder =>
+        {            
+            modelBuilder.Entity<User>(b =>
+            {
+                // Note the values properties of owned types are not seeded here
+                b.HasData(new User
                 {
-                    builder.Property(e => e.Id);
-                    builder.Property(e => e.Email);
-                    builder.Property(e => e.Password);
+                    Id = 1,
+                    Name = "test",
                 });
+
+                // Value Object types are not entities
+                // Must use anonymous type to initialise as value object does not have foreign key UserId         
+                // Seed with HasData
+                b.OwnsOne(e => e.Email).HasData(new
+                {
+                    UserId = 1,
+                    Address = "1@example.com",
+                });
+
+                b.OwnsOne(e => e.Password).HasData(new
+                {
+                    UserId = 1,
+                    Value = "password",
+                });
+            });
         }
     }
 }

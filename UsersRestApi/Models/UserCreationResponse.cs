@@ -7,11 +7,11 @@ namespace UsersRestApi.Models
 {
     public class UserCreationResponse
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
 
         public ICollection<string> Errors { get; set; }
 
-        public static UserCreationResponse Success(string id)
+        public static UserCreationResponse Success(int id)
         {
             var response = new UserCreationResponse
             {
@@ -25,7 +25,6 @@ namespace UsersRestApi.Models
         {
             var response = new UserCreationResponse
             {
-                Id = null,
                 Errors = errors,
             };
             return response;
