@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UsersRestApi.Domain;
+using UsersRestApi.Infrastructure;
 
 namespace UsersRestApi.Models
 {
@@ -20,6 +21,11 @@ namespace UsersRestApi.Models
         {            
             modelBuilder.Entity<User>(b =>
             {
+                // See https://github.com/aspnet/EntityFrameworkCore/issues/6872
+                // Use own value generator for the Id property, as the InMemory provider does not
+                // take into account seeded data values.
+                b.Property(e => e.Id).HasValueGenerator<MaxPlusOneValueGenerator<User>>();
+
                 // Note the values properties of owned types are not seeded here
                 b.HasData(new User
                 {

@@ -28,21 +28,35 @@ namespace UsersRestApi.Controllers
             _usersFinderService = usersFinderService;
         }
 
-        // GET api/<controller>/5
+        /// <summary>
+        /// GET api/<controller>/5
+        /// GET https://localhost:44357/api/users/1
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("{id}")]
         public ActionResult<Email> GetEmail(int id)
         {
             return Ok(_usersFinderService.FindUserEmailById(id));
         }
 
-        // POST api/<controller>
+        /// <summary>
+        /// POST api/<controller>
+        /// POST https://localhost:44357/api/users
+        /// application/json
+        /// {
+        ///   "Name":"name",
+        ///   "Email":"email@example.com",
+        ///   "Password":"password"
+        /// }
+        /// </summary>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         public ActionResult<UserCreationResponse> Post([FromBody]UserCreationRequest value)
         {
             var newUser = new User(value.Name, new Email(value.Email), new Password(value.Password));
             _userRepository.Add(newUser);
-            return CreatedAtAction(nameof(GetEmail), UserCreationResponse.Success(newUser.Id));
+            return CreatedAtAction(nameof(GetEmail), new { id = newUser.Id }, UserCreationResponse.Success(newUser.Id));
         }
     }
 }

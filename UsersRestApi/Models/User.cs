@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UsersRestApi.Domain;
+using UsersRestApi.Interfaces;
 
 namespace UsersRestApi.Models
 {
-    public class User
+    public class User : IIdentifiable
     {
         public User()
         {
