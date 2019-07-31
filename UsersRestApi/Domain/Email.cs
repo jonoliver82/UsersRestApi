@@ -21,12 +21,22 @@ namespace UsersRestApi.Domain
         {
         }
 
+        public static Email Of(string address)
+        {
+            return new Email(address);
+        }
+
         public Email(string address, IValidationExceptionHandler validationExceptionHandler)
         {
             // TODO validater could result in an exception thrown from the constructor
             _validater.Validate(address, validationExceptionHandler);
 
             Address = address;
+        }
+
+        public static void Test(string address, IValidationExceptionHandler validationExceptionHandler)
+        {
+            new EmailValidater().Validate(address, validationExceptionHandler);
         }
 
         public string Address { get; private set; }

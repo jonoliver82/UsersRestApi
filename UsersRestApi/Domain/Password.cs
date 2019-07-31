@@ -29,7 +29,17 @@ namespace UsersRestApi.Domain
             Value = value;
         }
 
+        public static Password Of(string value)
+        {
+            return new Password(value);
+        }
+
         public string Value { get; private set; }
+
+        public static void Test(string value, IValidationExceptionHandler validationExceptionHandler)
+        {
+            new PasswordValidater().Validate(value, validationExceptionHandler);
+        }
 
         protected override IEnumerable<object> GetAtomicValues()
         {

@@ -9,7 +9,7 @@ namespace UsersRestApi.Models
     {
         public int Id { get; set; }
 
-        public ICollection<string> Errors { get; set; }
+        public IEnumerable<string> Errors { get; set; }
 
         public static UserCreationResponse Success(int id)
         {
@@ -21,7 +21,7 @@ namespace UsersRestApi.Models
             return response;
         }
 
-        public static UserCreationResponse Failure(List<string> errors)
+        public static UserCreationResponse Failure(IEnumerable<string> errors)
         {
             var response = new UserCreationResponse
             {

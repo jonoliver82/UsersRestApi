@@ -5,8 +5,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using UsersRestApi.Domain;
+using UsersRestApi.Factories;
 using UsersRestApi.Interfaces;
 using UsersRestApi.Models;
+using UsersRestApi.Validaters;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -62,11 +64,46 @@ namespace UsersRestApi.Controllers
         /// </summary>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public ActionResult<UserCreationResponse> Post([FromBody]UserCreationRequest value)
+        public ActionResult<UserCreationResponse> Create([FromBody]UserCreationRequest request)
         {
-            var newUser = _userFactory.Create(value.Name, new Email(value.Email), new Password(value.Password));            
-            _userRepository.Add(newUser);
-            return CreatedAtAction(nameof(GetEmail), new { id = newUser.Id }, UserCreationResponse.Success(newUser.Id));
+            var errors = ValidateRequest(request);
+            if (errors.Any())
+            {
+                return BadRequest(UserCreationResponse.Failure(errors));
+            }
+            else
+            {
+                var newUser = SaveNewUser(request.Name,  request.Email, request.Password);
+                return CreatedAtAction(nameof(GetEmail), new { id = newUser.Id }, UserCreationResponse.Success(newUser.Id));
+            }            
+        }
+
+        private IEnumerable<string> ValidateRequest(UserCreationRequest request)
+        {
+            var validationExceptionHandler = new AggregatingValidationExceptionHandler();
+            Email.Test(request.Email, validationExceptionHandler);
+            Password.Test(request.Password, validationExceptionHandler);
+            if(validationExceptionHandler.HasErrors())
+            {
+                return validationExceptionHandler.GetErrors();
+            }
+
+            UserFactory.Test(Email.Of(request.Email), validationExceptionHandler);
+            if (validationExceptionHandler.HasErrors())
+            {
+                return validationExceptionHandler.GetErrors();
+            }
+
+            // TODO equivalent of Collections.emptyList()
+            return new List<string>();
+        }
+
+        private User SaveNewUser(string name, string email, string password)
+        {
+            // TODO Of() rationale
+            var user = _userFactory.Create(name, Email.Of(email), Password.Of(password));
+            _userRepository.Add(user);
+            return user;
         }
     }
 }

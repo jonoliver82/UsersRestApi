@@ -26,5 +26,11 @@ namespace UsersRestApi.Factories
 
             return new User(name, email, password);
         }
+
+        public static void Test(Email email, IValidationExceptionHandler handler)
+        {
+            // TODO needs repository...
+            //new EmailUniquenessValidater().Validate(email, handler);
+        }
     }
 }
