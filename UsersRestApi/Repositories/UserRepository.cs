@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using UsersRestApi.Domain;
 using UsersRestApi.Interfaces;
 using UsersRestApi.Models;
+using UsersRestApi.Specifications;
 
 namespace UsersRestApi.Repositories
 {
@@ -20,6 +22,18 @@ namespace UsersRestApi.Repositories
         {
             _context.Users.Add(user);
             _context.SaveChanges();
+        }
+
+        public bool Any(ISpecification<User> spec)
+        {
+            return _context.Set<User>().Any(spec.Criteria);
+        }
+
+        public bool IsUniqueEmail(Email email)
+        {
+            var spec = new MatchingEmailSpecification(email);
+            return Any(spec);
+
         }
 
         public User Single(ISpecification<User> spec)

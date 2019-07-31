@@ -7,14 +7,8 @@ using UsersRestApi.Models;
 
 namespace UsersRestApi.Interfaces
 {
-    public interface IUserRepository
+    public interface IUserFactory
     {
-        void Add(User user);
-
-        User Single(ISpecification<User> spec);
-
-        bool IsUniqueEmail(Email email);
-
-        bool Any(ISpecification<User> spec);
+        User Create(string name, Email email, Password password);
     }
 }

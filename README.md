@@ -8,6 +8,8 @@ This project shows examples of the following concepts:
 
 TODO
 * Using the Visitor pattern for validation
+* Maybe<Email>
+* Chain of Responsibility
 
 The project incorporates ideas from:
 * [Entity types with constructors](https://docs.microsoft.com/en-us/ef/core/modeling/constructors)

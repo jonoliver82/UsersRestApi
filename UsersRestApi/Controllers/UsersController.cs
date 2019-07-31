@@ -21,14 +21,20 @@ namespace UsersRestApi.Controllers
     {
         private readonly IUserRepository _userRepository;
         private readonly IUsersFinderService _usersFinderService;
+        private readonly IUserFactory _userFactory;
 
-        public UsersController(IUserRepository userRepository, IUsersFinderService usersFinderService)
+        public UsersController(IUserRepository userRepository, 
+            IUsersFinderService usersFinderService,
+            IUserFactory userFactory)
         {
             _userRepository = userRepository;
             _usersFinderService = usersFinderService;
+            _userFactory = userFactory;
         }
 
         /// <summary>
+        /// Get the email address of a registered user
+        /// 
         /// GET api/<controller>/5
         /// GET https://localhost:44357/api/users/1
         /// </summary>
@@ -37,11 +43,15 @@ namespace UsersRestApi.Controllers
         [HttpGet("{id}")]
         public ActionResult<Email> GetEmail(int id)
         {
+            // TODO FindUserEmailById should return a Maybe
             return Ok(_usersFinderService.FindUserEmailById(id));
         }
 
         /// <summary>
+        /// Register a new user
+        /// 
         /// POST api/<controller>
+        /// 
         /// POST https://localhost:44357/api/users
         /// application/json
         /// {
@@ -54,7 +64,7 @@ namespace UsersRestApi.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         public ActionResult<UserCreationResponse> Post([FromBody]UserCreationRequest value)
         {
-            var newUser = new User(value.Name, new Email(value.Email), new Password(value.Password));
+            var newUser = _userFactory.Create(value.Name, new Email(value.Email), new Password(value.Password));            
             _userRepository.Add(newUser);
             return CreatedAtAction(nameof(GetEmail), new { id = newUser.Id }, UserCreationResponse.Success(newUser.Id));
         }

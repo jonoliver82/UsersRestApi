@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using UsersRestApi.Validaters;
 
 namespace UsersRestApi.Domain
 {
@@ -10,8 +11,15 @@ namespace UsersRestApi.Domain
     /// </summary>
     public class Password : ValueObject
     {
+        // TODO should value objects have validaters provided by dependency injection 
+        // into their constructors? A factory would be better
+        private readonly PasswordValidater _validater = new PasswordValidater();
+
         public Password(string value)
         {
+            // TODO validater could result in an exception thrown from the constructor
+            _validater.Validate(value);
+
             Value = value;
         }
 
