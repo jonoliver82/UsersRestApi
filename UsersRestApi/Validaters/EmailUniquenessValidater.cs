@@ -20,7 +20,7 @@ namespace UsersRestApi.Validaters
 
         public void Validate(Email email)
         {
-            if (!_repository.Any(new MatchingEmailSpecification(email)))
+            if (_repository.Any(new MatchingEmailSpecification(email)))
             {
                 throw new NotUniqueEmailAddress(email);
             }

@@ -44,9 +44,43 @@ namespace UsersRestApi.Domain
                     return false;
                 }
             }
+
             return !thisValues.MoveNext() && !otherValues.MoveNext();
         }
 
+        /// <summary>
+        /// Equals is overrriden, therefore we must overload the equality operator
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        public static bool operator ==(ValueObject a, ValueObject b)
+        {
+            if (ReferenceEquals(a, null) && ReferenceEquals(b, null))
+            {
+                return true;
+            }
+
+            if (ReferenceEquals(a, null) || ReferenceEquals(b, null))
+            {
+                return false;
+            }
+
+            return a.Equals(b);
+        }
+
+        /// <summary>
+        /// Required as we overload the equality operator
+        /// </summary>
+        public static bool operator !=(ValueObject a, ValueObject b)
+        {
+            return !(a == b);
+        }
+        
+        /// <summary>
+        /// Types that override Equals must also override GetHashCode; otherwise, hash tables
+        /// might not work correctly
+        /// </summary>        
         public override int GetHashCode()
         {
             return GetAtomicValues()
@@ -58,6 +92,5 @@ namespace UsersRestApi.Domain
         {
             return this.MemberwiseClone() as ValueObject;
         }
-
     }
 }
