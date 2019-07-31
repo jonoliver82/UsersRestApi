@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using UsersRestApi.Exceptions;
 using System.Text.RegularExpressions;
+using UsersRestApi.Interfaces;
 
 namespace UsersRestApi.Validaters
 {
@@ -11,12 +12,12 @@ namespace UsersRestApi.Validaters
     {
         private const string _pattern = @"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,})+)$";
         
-        public void Validate(string email)
+        public void Validate(string email, IValidationExceptionHandler validationExceptionHandler)
         {
             var rx = new Regex(_pattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
             if (string.IsNullOrEmpty(email) || !rx.IsMatch(email))
             {
-                throw new BadEmailException(email);
+                validationExceptionHandler.Add(new BadEmailException(email));
             }
         }
 

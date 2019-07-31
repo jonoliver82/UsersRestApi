@@ -18,11 +18,11 @@ namespace UsersRestApi.Validaters
             _repository = repository;
         }
 
-        public void Validate(Email email)
+        public void Validate(Email email, IValidationExceptionHandler validationExceptionHandler)
         {
             if (_repository.Any(new MatchingEmailSpecification(email)))
             {
-                throw new NotUniqueEmailAddress(email);
+                validationExceptionHandler.Add(new NotUniqueEmailAddress(email));
             }
         }
     }

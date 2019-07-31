@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using UsersRestApi.Interfaces;
 using UsersRestApi.Validaters;
 
 namespace UsersRestApi.Domain
@@ -16,9 +17,14 @@ namespace UsersRestApi.Domain
         private readonly EmailValidater _validater = new EmailValidater();
 
         public Email(string address)
+            : this(address, new ThrowingValidationExceptionHandler())
+        {
+        }
+
+        public Email(string address, IValidationExceptionHandler validationExceptionHandler)
         {
             // TODO validater could result in an exception thrown from the constructor
-            _validater.Validate(address);
+            _validater.Validate(address, validationExceptionHandler);
 
             Address = address;
         }
@@ -29,6 +35,11 @@ namespace UsersRestApi.Domain
         {
             // Using a yield return statement to return each element one at a time
             yield return Address;
+        }
+
+        public override string ToString()
+        {
+            return Address;
         }
     }
 }

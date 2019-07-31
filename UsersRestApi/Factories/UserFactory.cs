@@ -12,15 +12,17 @@ namespace UsersRestApi.Factories
     public class UserFactory : IUserFactory
     {
         private readonly IEmailUniquenessValidater _validater;
+        private readonly IValidationExceptionHandler _handler;
 
-        public UserFactory(IEmailUniquenessValidater validater)
+        public UserFactory(IEmailUniquenessValidater validater, IValidationExceptionHandler handler)
         {
             _validater = validater;
+            _handler = handler;
         }
 
         public User Create(string name, Email email, Password password)
         {
-            _validater.Validate(email);
+            _validater.Validate(email, _handler);
 
             return new User(name, email, password);
         }

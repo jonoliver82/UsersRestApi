@@ -43,6 +43,7 @@ namespace UsersRestApi
             services.AddScoped<IUsersFinderService, UsersFinderService>();
             services.AddScoped<IUserFactory, UserFactory>();
             services.AddScoped<IEmailUniquenessValidater, EmailUniquenessValidater>();
+            services.AddScoped<IValidationExceptionHandler, ThrowingValidationExceptionHandler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

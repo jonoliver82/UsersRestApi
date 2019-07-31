@@ -8,6 +8,6 @@ namespace UsersRestApi.Interfaces
 {
     public interface IEmailUniquenessValidater
     {
-        void Validate(Email email);
+        void Validate(Email email, IValidationExceptionHandler validationExceptionHandler);
     }
 }
