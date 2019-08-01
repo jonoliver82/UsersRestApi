@@ -2,35 +2,36 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using UsersRestApi.Core;
 using UsersRestApi.Domain;
+using UsersRestApi.Exceptions;
 using UsersRestApi.Interfaces;
 using UsersRestApi.Models;
+using UsersRestApi.Queries;
+using UsersRestApi.Specifications;
 using UsersRestApi.Validaters;
 
 namespace UsersRestApi.Factories
 {
     public class UserFactory : IUserFactory
     {
-        private readonly IEmailUniquenessValidater _validater;
-        private readonly IValidationExceptionHandler _handler;
+        private readonly IUserRepository _userRepository;
 
-        public UserFactory(IEmailUniquenessValidater validater, IValidationExceptionHandler handler)
+        public UserFactory(IUserRepository userRepository)
         {
-            _validater = validater;
-            _handler = handler;
+            _userRepository = userRepository;
         }
 
-        public User Create(string name, Email email, Password password)
+        public Maybe<User> Create(string name, Email email, Password password, IValidationExceptionHandler validationExceptionHandler)
         {
-            _validater.Validate(email, _handler);
+            var rule = new IsEmailUniqueSpecification(_userRepository);
+            if (rule.IsSatisfiedBy(email))
+            {
+                return new Maybe<User>(new User(name, email, password));
+            }
 
-            return new User(name, email, password);
-        }
-
-        public static void Test(Email email, IValidationExceptionHandler handler)
-        {
-            // TODO needs repository...
-            //new EmailUniquenessValidater().Validate(email, handler);
+            validationExceptionHandler.Add(new NotUniqueEmailAddress(email));
+            return new Maybe<User>();
         }
     }
 }

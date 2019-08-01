@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using UsersRestApi.Extensions;
 using UsersRestApi.Factories;
 using UsersRestApi.Interfaces;
 using UsersRestApi.Models;
@@ -37,13 +38,12 @@ namespace UsersRestApi
             // Add our Entity Framework Core database
             services.AddDbContext<UsersContext>(opt => opt.UseInMemoryDatabase("Users"));
 
-            // TODO move to extension class
-            // Register our other classes for Dependency Injection
-            services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<IUsersFinderService, UsersFinderService>();
-            services.AddScoped<IUserFactory, UserFactory>();
-            services.AddScoped<IEmailUniquenessValidater, EmailUniquenessValidater>();
-            services.AddScoped<IValidationExceptionHandler, ThrowingValidationExceptionHandler>();
+            // Register our services for Dependency Injection
+            services.RegisterFactories();
+            services.RegisterOptions(Configuration);
+            services.RegisterRepositories();
+            services.RegisterServices();
+            services.RegisterValidaters();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -66,6 +66,7 @@ namespace UsersRestApi
             using (var scope = app.ApplicationServices.CreateScope())
             {
                 var context = scope.ServiceProvider.GetService<UsersContext>();
+                // Ensure the HasData() methods in the context are executed
                 context.Database.EnsureCreated();
             }
         }

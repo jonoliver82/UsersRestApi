@@ -9,10 +9,6 @@ namespace UsersRestApi.Interfaces
 {
     public interface ISpecification<T>
     {
-        Expression<Func<T, bool>> Criteria { get; }
-
-        List<Expression<Func<T, object>>> Includes { get; }
-
-        List<string> IncludeStrings { get; }
+        bool IsSatisfiedBy(T entity);
     }
 }

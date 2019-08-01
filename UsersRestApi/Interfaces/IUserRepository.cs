@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using UsersRestApi.Domain;
 using UsersRestApi.Models;
@@ -11,10 +12,12 @@ namespace UsersRestApi.Interfaces
     {
         void Add(User user);
 
-        User Single(ISpecification<User> spec);
+        User SingleOrDefault(IQuery<User> query);
 
-        bool IsUniqueEmail(Email email);
+        User SingleOrDefault(Expression<Func<User, bool>> predicate);
 
-        bool Any(ISpecification<User> spec);
+        bool Any(Expression<Func<User, bool>> predicate);
+
+        bool Any(IQuery<User> query);
     }
 }

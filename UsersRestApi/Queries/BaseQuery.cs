@@ -5,11 +5,11 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using UsersRestApi.Interfaces;
 
-namespace UsersRestApi.Specifications
+namespace UsersRestApi.Queries
 {
-    public abstract class BaseSpecification<T> : ISpecification<T>
+    public abstract class BaseQuery<T> : IQuery<T>
     {
-        public BaseSpecification(Expression<Func<T, bool>> criteria)
+        public BaseQuery(Expression<Func<T, bool>> criteria)
         {
             Criteria = criteria;
         }
@@ -33,9 +33,9 @@ namespace UsersRestApi.Specifications
             IncludeStrings.Add(includeString);
         }
 
-        public bool IsSatisfiedBy(T entity)
-        {
-            return Criteria.Compile().Invoke(entity);
-        }
+        //public bool IsSatisfiedBy(T entity)
+        //{
+        //    return Criteria.Compile().Invoke(entity);
+        //}
     }
 }

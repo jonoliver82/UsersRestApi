@@ -9,5 +9,9 @@ namespace UsersRestApi.Interfaces
     public interface IValidationExceptionHandler
     {
         void Add(ValidationException exception);
+
+        bool HasErrors { get; }
+
+        IEnumerable<string> Errors { get; }
     }
 }

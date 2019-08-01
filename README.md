@@ -10,6 +10,7 @@ TODO
 * Using the Visitor pattern for validation
 * Maybe<Email>
 * Chain of Responsibility
+https://docs.microsoft.com/en-us/dotnet/architecture/microservices/microservice-ddd-cqrs-patterns/domain-model-layer-validations
 
 The project incorporates ideas from:
 * [Entity types with constructors](https://docs.microsoft.com/en-us/ef/core/modeling/constructors)

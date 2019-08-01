@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using UsersRestApi.Domain;
 using UsersRestApi.Interfaces;
@@ -24,21 +25,24 @@ namespace UsersRestApi.Repositories
             _context.SaveChanges();
         }
 
-        public bool Any(ISpecification<User> spec)
+        public bool Any(Expression<Func<User,bool>> predicate)
         {
-            return _context.Set<User>().Any(spec.Criteria);
+            return _context.Set<User>().Any(predicate);
         }
 
-        public bool IsUniqueEmail(Email email)
+        public bool Any(IQuery<User> query)
         {
-            var spec = new MatchingEmailSpecification(email);
-            return Any(spec);
-
+            return _context.Set<User>().Any(query.Criteria);
         }
 
-        public User Single(ISpecification<User> spec)
+        public User SingleOrDefault(Expression<Func<User, bool>> predicate)
         {
-            return _context.Set<User>().SingleOrDefault(spec.Criteria);
+            return _context.Set<User>().SingleOrDefault(predicate);
+        }
+
+        public User SingleOrDefault(IQuery<User> query)
+        {
+            return _context.Set<User>().SingleOrDefault(query.Criteria);
         }
     }
 }

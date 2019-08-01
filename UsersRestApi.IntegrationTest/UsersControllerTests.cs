@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using System;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -63,7 +64,7 @@ namespace UsersRestApi.IntegrationTest
             var content = await response.Content.ReadAsStringAsync();
             var result = JsonConvert.DeserializeObject<UserCreationResponse>(content);
             Assert.AreEqual(2, result.Id);
-            Assert.AreEqual(0, result.Errors.Count);
+            Assert.AreEqual(0, result.Errors.Count());
         }
     }
 }

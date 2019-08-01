@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 using UsersRestApi.Domain;
 using UsersRestApi.Models;
 
-namespace UsersRestApi.Specifications
+namespace UsersRestApi.Queries
 {
-    public class MatchingEmailSpecification : BaseSpecification<User>
+    public class MatchingEmailQuery : BaseQuery<User>
     {
-        public MatchingEmailSpecification(Email email)
+        public MatchingEmailQuery(Email email)
             : base(u => u.Email == email)
         {
         }

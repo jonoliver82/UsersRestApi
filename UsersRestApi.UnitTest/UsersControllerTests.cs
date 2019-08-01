@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using UsersRestApi.UnitTest.Helpers;
 using UsersRestApi.Models;
 using UsersRestApi.Exceptions;
+using UsersRestApi.Core;
 
 namespace UsersRestApi.UnitTest
 {
@@ -21,6 +22,8 @@ namespace UsersRestApi.UnitTest
         private Mock<IUsersFinderService> _mockUsersFinderService;
         private Mock<IUserFactory> _mockUserFactory;
 
+        private Mock<IValidationExceptionHandler> _mockValidationExceptionHandler;
+
         [TestInitialize]
         public void TestInitialize()
         {
@@ -28,6 +31,8 @@ namespace UsersRestApi.UnitTest
             _mockUsersFinderService = new Mock<IUsersFinderService>();
             _mockUserFactory = new Mock<IUserFactory>();
 
+            _mockValidationExceptionHandler = new Mock<IValidationExceptionHandler>();
+            
             _controller = new UsersController(_mockUserRepository.Object, 
                 _mockUsersFinderService.Object, 
                 _mockUserFactory.Object);
@@ -37,7 +42,7 @@ namespace UsersRestApi.UnitTest
         public void GetReturnsEmailWhenUserExists()
         {
             // Arrange
-            _mockUsersFinderService.Setup(m => m.FindUserEmailById(It.Is<int>(x => x == 1))).Returns(new Email("1@example.com"));
+            _mockUsersFinderService.Setup(m => m.FindUserEmailById(It.Is<int>(x => x == 1))).Returns(new Maybe<Email>(new Email("1@example.com")));
 
             // Act
             var result = _controller.GetEmail(1);
@@ -52,8 +57,7 @@ namespace UsersRestApi.UnitTest
         {
             // Arrange
             var unknown = "unknown@example.com";
-            // TODO Cant use string.Empty as this is will fail Email address validation
-            _mockUsersFinderService.Setup(m => m.FindUserEmailById(It.IsAny<int>())).Returns(new Email(unknown));
+            _mockUsersFinderService.Setup(m => m.FindUserEmailById(It.IsAny<int>())).Returns(new Maybe<Email>());
 
             // Act
             var result = _controller.GetEmail(1);
@@ -75,7 +79,7 @@ namespace UsersRestApi.UnitTest
             };
 
             // Act
-            var result = _controller.Post(request);
+            var result = _controller.Create(request);
 
             // Assert - Expected Exception
         }
@@ -93,7 +97,7 @@ namespace UsersRestApi.UnitTest
             };
 
             // Act
-            var result = _controller.Post(request);
+            var result = _controller.Create(request);
 
             // Assert - Expected Exception
         }
@@ -111,7 +115,7 @@ namespace UsersRestApi.UnitTest
             };
 
             // Act
-            var result = _controller.Post(request);
+            var result = _controller.Create(request);
 
             // Assert - Expected Exception
         }
@@ -128,7 +132,7 @@ namespace UsersRestApi.UnitTest
             };
 
             // Act
-            var result = _controller.Post(request);
+            var result = _controller.Create(request);
 
             // Assert - Expected Exception
         }
@@ -139,7 +143,7 @@ namespace UsersRestApi.UnitTest
         {
             // Arrange
             var value = new Email("1@example.com");
-            _mockUserFactory.Setup(m => m.Create(It.IsAny<string>(), value, It.IsAny<Password>()))
+            _mockUserFactory.Setup(m => m.Create(It.IsAny<string>(), value, It.IsAny<Password>(), _mockValidationExceptionHandler.Object))
                 .Throws(new NotUniqueEmailAddress(value));
 
             var request = new UserCreationRequest
@@ -150,7 +154,7 @@ namespace UsersRestApi.UnitTest
             };
 
             // Act
-            var result = _controller.Post(request);
+            var result = _controller.Create(request);
 
             // Assert - Expected Exception
         }        

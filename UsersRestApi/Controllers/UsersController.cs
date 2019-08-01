@@ -45,8 +45,10 @@ namespace UsersRestApi.Controllers
         [HttpGet("{id}")]
         public ActionResult<Email> GetEmail(int id)
         {
-            // TODO FindUserEmailById should return a Maybe
-            return Ok(_usersFinderService.FindUserEmailById(id));
+            var maybeEmail = _usersFinderService.FindUserEmailById(id);
+            return maybeEmail.Select<ActionResult>(
+                empty: () => NotFound(),
+                func: (email) => Ok(email));
         }
 
         /// <summary>
@@ -66,44 +68,28 @@ namespace UsersRestApi.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         public ActionResult<UserCreationResponse> Create([FromBody]UserCreationRequest request)
         {
-            var errors = ValidateRequest(request);
-            if (errors.Any())
-            {
-                return BadRequest(UserCreationResponse.Failure(errors));
-            }
-            else
-            {
-                var newUser = SaveNewUser(request.Name,  request.Email, request.Password);
-                return CreatedAtAction(nameof(GetEmail), new { id = newUser.Id }, UserCreationResponse.Success(newUser.Id));
-            }            
-        }
-
-        private IEnumerable<string> ValidateRequest(UserCreationRequest request)
-        {
             var validationExceptionHandler = new AggregatingValidationExceptionHandler();
-            Email.Test(request.Email, validationExceptionHandler);
-            Password.Test(request.Password, validationExceptionHandler);
-            if(validationExceptionHandler.HasErrors())
+
+            // Visitor: validationExceptionHandler
+            // Visitee: value objects
+            // TODO pass in a validator instead
+            Email.Accept(request.Email, validationExceptionHandler);
+            Password.Accept(request.Password, validationExceptionHandler);
+
+            if (validationExceptionHandler.HasErrors)
             {
-                return validationExceptionHandler.GetErrors();
+                return BadRequest(UserCreationResponse.Failure(validationExceptionHandler.Errors));
             }
 
-            UserFactory.Test(Email.Of(request.Email), validationExceptionHandler);
-            if (validationExceptionHandler.HasErrors())
-            {
-                return validationExceptionHandler.GetErrors();
-            }
+            // Note we dont visit the factory method until after the value objects have been created
+            var maybeUser = _userFactory.Create(request.Name, 
+                new Email(request.Email), 
+                new Password(request.Password), 
+                validationExceptionHandler);
 
-            // TODO equivalent of Collections.emptyList()
-            return new List<string>();
-        }
-
-        private User SaveNewUser(string name, string email, string password)
-        {
-            // TODO Of() rationale
-            var user = _userFactory.Create(name, Email.Of(email), Password.Of(password));
-            _userRepository.Add(user);
-            return user;
+            return maybeUser.Select<ActionResult>(
+                empty: () => BadRequest(UserCreationResponse.Failure(validationExceptionHandler.Errors)),
+                func: (user) => CreatedAtAction(nameof(GetEmail), new { id = user.Id }, UserCreationResponse.Success(user.Id)));                     
         }
     }
 }

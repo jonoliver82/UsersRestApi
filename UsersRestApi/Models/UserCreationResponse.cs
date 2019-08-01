@@ -16,7 +16,7 @@ namespace UsersRestApi.Models
             var response = new UserCreationResponse
             {
                 Id = id,
-                Errors = new List<string>(),
+                Errors = Enumerable.Empty<string>(),
             };
             return response;
         }

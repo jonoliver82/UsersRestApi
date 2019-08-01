@@ -21,22 +21,9 @@ namespace UsersRestApi.Validaters
             _errors.Add(exception);
         }
 
-        // TODO not used
-        // TODO not in interface
-        public bool HasErrors()
-        {
-            return _errors.Any();
-        }
+        public bool HasErrors => _errors.Any();
 
-        /// <summary>
-        /// TODO not in interface
-        /// Collect all the errors
-        /// </summary>
-        public IEnumerable<string> GetErrors()
-        {
-            // TODO check java documentation for stream - map - collect
-            // java: errors.stream().map(Throwable::getMessage).collect(Collectors.toList());           
-            return _errors.Select(x => x.Message);
-        }
+        public IEnumerable<string> Errors => _errors.Select(x => x.Message);
+        
     }
 }
