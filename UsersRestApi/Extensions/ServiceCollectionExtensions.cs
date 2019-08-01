@@ -6,7 +6,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using UsersRestApi.Factories;
 using UsersRestApi.Interfaces;
-using UsersRestApi.Options;
 using UsersRestApi.Repositories;
 using UsersRestApi.Services;
 using UsersRestApi.Validaters;
@@ -18,13 +17,6 @@ namespace UsersRestApi.Extensions
         public static IServiceCollection RegisterFactories(this IServiceCollection services)
         {
             services.AddScoped<IUserFactory, UserFactory>();
-
-            return services;
-        }
-
-        public static IServiceCollection RegisterOptions(this IServiceCollection services, IConfiguration configuration)
-        {
-            services.Configure<PasswordValidationOptions>(configuration.GetSection<PasswordValidationOptions>());
 
             return services;
         }

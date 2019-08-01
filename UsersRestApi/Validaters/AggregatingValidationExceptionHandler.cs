@@ -9,7 +9,7 @@ namespace UsersRestApi.Validaters
 {
     public class AggregatingValidationExceptionHandler : IValidationExceptionHandler
     {
-        private List<ValidationException> _errors;
+        private readonly List<ValidationException> _errors;
 
         public AggregatingValidationExceptionHandler()
         {

@@ -40,7 +40,6 @@ namespace UsersRestApi
 
             // Register our services for Dependency Injection
             services.RegisterFactories();
-            services.RegisterOptions(Configuration);
             services.RegisterRepositories();
             services.RegisterServices();
             services.RegisterValidaters();

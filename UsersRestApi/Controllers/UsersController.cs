@@ -25,7 +25,7 @@ namespace UsersRestApi.Controllers
         private readonly IUsersFinderService _usersFinderService;
         private readonly IUserFactory _userFactory;
 
-        public UsersController(IUserRepository userRepository, 
+        public UsersController(IUserRepository userRepository,
             IUsersFinderService usersFinderService,
             IUserFactory userFactory)
         {
@@ -48,7 +48,7 @@ namespace UsersRestApi.Controllers
             var maybeEmail = _usersFinderService.FindUserEmailById(id);
             return maybeEmail.Select<ActionResult>(
                 empty: () => NotFound(),
-                func: (email) => Ok(email));
+                present: (email) => Ok(email));
         }
 
         /// <summary>
@@ -89,7 +89,11 @@ namespace UsersRestApi.Controllers
 
             return maybeUser.Select<ActionResult>(
                 empty: () => BadRequest(UserCreationResponse.Failure(validationExceptionHandler.Errors)),
-                func: (user) => CreatedAtAction(nameof(GetEmail), new { id = user.Id }, UserCreationResponse.Success(user.Id)));                     
+                present: (user) =>
+                {
+                    _userRepository.Add(user);
+                    return CreatedAtAction(nameof(GetEmail), new { id = user.Id }, UserCreationResponse.Success(user.Id));
+                });                     
         }
     }
 }

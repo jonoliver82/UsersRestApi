@@ -41,14 +41,14 @@ namespace UsersRestApi.Core
             return _hasItem ? _item.GetHashCode() : 0;
         }
 
-        public TResult Select<TResult>(Func<TResult> empty, Func<T, TResult> func)
+        public TResult Select<TResult>(Func<TResult> empty, Func<T, TResult> present)
         {
-            if (func == null)
+            if (present == null)
             {
-                throw new ArgumentNullException(nameof(func));
+                throw new ArgumentNullException(nameof(present));
             }
 
-            return _hasItem ? func(_item) : empty();
+            return _hasItem ? present(_item) : empty();
         }
     }
 }

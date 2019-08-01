@@ -8,6 +8,7 @@ using UsersRestApi.UnitTest.Helpers;
 using UsersRestApi.Models;
 using UsersRestApi.Exceptions;
 using UsersRestApi.Core;
+using System.Linq;
 
 namespace UsersRestApi.UnitTest
 {
@@ -33,7 +34,7 @@ namespace UsersRestApi.UnitTest
 
             _mockValidationExceptionHandler = new Mock<IValidationExceptionHandler>();
             
-            _controller = new UsersController(_mockUserRepository.Object, 
+            _controller = new UsersController(_mockUserRepository.Object,
                 _mockUsersFinderService.Object, 
                 _mockUserFactory.Object);
         }
@@ -53,22 +54,19 @@ namespace UsersRestApi.UnitTest
         }
 
         [TestMethod]
-        public void GetReturnUnknownEmailWhenUserDoesNotExist()
+        public void GetReturnsNotFoundWhenUserDoesNotExist()
         {
             // Arrange
-            var unknown = "unknown@example.com";
             _mockUsersFinderService.Setup(m => m.FindUserEmailById(It.IsAny<int>())).Returns(new Maybe<Email>());
 
             // Act
             var result = _controller.GetEmail(1);
 
             // Assert
-            var email = AssertHelpers.IsOkResult<Email>(result);
-            Assert.AreEqual(new Email(unknown), email);
+            Assert.IsInstanceOfType(result.Result, typeof(NotFoundResult));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(PasswordTooWeakException))]
         public void CreateRaisesPasswordTooWeakExceptionWhenNoPassowrd()
         {
             // Arrange
@@ -81,7 +79,12 @@ namespace UsersRestApi.UnitTest
             // Act
             var result = _controller.Create(request);
 
-            // Assert - Expected Exception
+            // Assert
+            Assert.IsInstanceOfType(result.Result, typeof(BadRequestResult));
+            var response = result.Value;
+            Assert.AreEqual(0, response.Id);
+            Assert.AreEqual(1, response.Errors.Count());
+            CollectionAssert.Contains(response.Errors.ToList(), "Password too weak");
         }
 
         [TestMethod]
