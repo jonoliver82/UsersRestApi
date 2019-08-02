@@ -24,14 +24,17 @@ namespace UsersRestApi.Controllers
         private readonly IUserRepository _userRepository;
         private readonly IUsersFinderService _usersFinderService;
         private readonly IUserFactory _userFactory;
+        private readonly IValidationExceptionHandler _validationExceptionHandler;
 
         public UsersController(IUserRepository userRepository,
             IUsersFinderService usersFinderService,
-            IUserFactory userFactory)
+            IUserFactory userFactory,
+            IValidationExceptionHandler validationExceptionHandler)
         {
             _userRepository = userRepository;
             _usersFinderService = usersFinderService;
             _userFactory = userFactory;
+            _validationExceptionHandler = validationExceptionHandler;
         }
 
         /// <summary>
@@ -68,27 +71,25 @@ namespace UsersRestApi.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         public ActionResult<UserCreationResponse> Create([FromBody]UserCreationRequest request)
         {
-            var validationExceptionHandler = new AggregatingValidationExceptionHandler();
-
             // Visitor: validationExceptionHandler
             // Visitee: value objects
             // TODO pass in a validator instead
-            Email.Accept(request.Email, validationExceptionHandler);
-            Password.Accept(request.Password, validationExceptionHandler);
+            Email.Accept(request.Email, _validationExceptionHandler);
+            Password.Accept(request.Password, _validationExceptionHandler);
 
-            if (validationExceptionHandler.HasErrors)
+            if (_validationExceptionHandler.HasErrors)
             {
-                return BadRequest(UserCreationResponse.Failure(validationExceptionHandler.Errors));
+                return BadRequest(UserCreationResponse.Failure(_validationExceptionHandler.Errors));
             }
 
             // Note we dont visit the factory method until after the value objects have been created
             var maybeUser = _userFactory.Create(request.Name, 
                 new Email(request.Email), 
                 new Password(request.Password), 
-                validationExceptionHandler);
+                _validationExceptionHandler);
 
             return maybeUser.Select<ActionResult>(
-                empty: () => BadRequest(UserCreationResponse.Failure(validationExceptionHandler.Errors)),
+                empty: () => BadRequest(UserCreationResponse.Failure(_validationExceptionHandler.Errors)),
                 present: (user) =>
                 {
                     _userRepository.Add(user);

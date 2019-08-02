@@ -9,6 +9,7 @@ using UsersRestApi.Models;
 using UsersRestApi.Exceptions;
 using UsersRestApi.Core;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace UsersRestApi.UnitTest
 {
@@ -22,7 +23,6 @@ namespace UsersRestApi.UnitTest
         private Mock<IUserRepository> _mockUserRepository;
         private Mock<IUsersFinderService> _mockUsersFinderService;
         private Mock<IUserFactory> _mockUserFactory;
-
         private Mock<IValidationExceptionHandler> _mockValidationExceptionHandler;
 
         [TestInitialize]
@@ -31,12 +31,12 @@ namespace UsersRestApi.UnitTest
             _mockUserRepository = new Mock<IUserRepository>();
             _mockUsersFinderService = new Mock<IUsersFinderService>();
             _mockUserFactory = new Mock<IUserFactory>();
-
             _mockValidationExceptionHandler = new Mock<IValidationExceptionHandler>();
-            
+           
             _controller = new UsersController(_mockUserRepository.Object,
                 _mockUsersFinderService.Object, 
-                _mockUserFactory.Object);
+                _mockUserFactory.Object,
+                _mockValidationExceptionHandler.Object);
         }
 
         [TestMethod]
@@ -67,7 +67,7 @@ namespace UsersRestApi.UnitTest
         }
 
         [TestMethod]
-        public void CreateRaisesPasswordTooWeakExceptionWhenNoPassowrd()
+        public void CreateRepsondsWithErrorWhenNoPassword()
         {
             // Arrange
             var request = new UserCreationRequest
@@ -75,21 +75,29 @@ namespace UsersRestApi.UnitTest
                 Email = "weak@example.com",
                 Name = "weak",
             };
+            _mockValidationExceptionHandler.SetupGet(p => p.HasErrors).Returns(true);
+            _mockValidationExceptionHandler.SetupGet(p => p.Errors)
+                .Returns(new List<string> { "Password too weak" });
 
             // Act
             var result = _controller.Create(request);
 
             // Assert
-            Assert.IsInstanceOfType(result.Result, typeof(BadRequestResult));
-            var response = result.Value;
+            Assert.IsInstanceOfType(result.Result, typeof(BadRequestObjectResult));
+            var badObject = (BadRequestObjectResult)result.Result;
+
+            Assert.IsInstanceOfType(badObject.Value, typeof(UserCreationResponse));
+            var response = (UserCreationResponse)badObject.Value;
+
+            _mockValidationExceptionHandler.Verify(m => m.Add(It.IsAny<ValidationException>()), Times.Once);
+
             Assert.AreEqual(0, response.Id);
             Assert.AreEqual(1, response.Errors.Count());
             CollectionAssert.Contains(response.Errors.ToList(), "Password too weak");
         }
 
         [TestMethod]
-        [ExpectedException(typeof(PasswordTooWeakException))]
-        public void CreateRaisesPasswordTooWeakExceptionWhenPasswordTooShort()
+        public void CreateResondsWithErrorWhenPasswordTooShort()
         {
             // Arrange
             var request = new UserCreationRequest
@@ -98,16 +106,29 @@ namespace UsersRestApi.UnitTest
                 Name = "weak",
                 Password = "weak"
             };
+            _mockValidationExceptionHandler.SetupGet(p => p.HasErrors).Returns(true);
+            _mockValidationExceptionHandler.SetupGet(p => p.Errors)
+                .Returns(new List<string> { "Password too weak" });
 
             // Act
             var result = _controller.Create(request);
 
-            // Assert - Expected Exception
+            // Assert
+            Assert.IsInstanceOfType(result.Result, typeof(BadRequestObjectResult));
+            var badObject = (BadRequestObjectResult)result.Result;
+
+            Assert.IsInstanceOfType(badObject.Value, typeof(UserCreationResponse));
+            var response = (UserCreationResponse)badObject.Value;
+
+            _mockValidationExceptionHandler.Verify(m => m.Add(It.IsAny<ValidationException>()), Times.Once);
+
+            Assert.AreEqual(0, response.Id);
+            Assert.AreEqual(1, response.Errors.Count());
+            CollectionAssert.Contains(response.Errors.ToList(), "Password too weak");
         }
 
         [TestMethod]
-        [ExpectedException(typeof(BadEmailException))]
-        public void CreateRaisesBadEmailExceptionWhenEmailNotValid()
+        public void CreateRespondsWithErrorWhenEmailNotValid()
         {
             // Arrange
             var request = new UserCreationRequest
@@ -116,16 +137,29 @@ namespace UsersRestApi.UnitTest
                 Name = "email",
                 Password = "password"
             };
+            _mockValidationExceptionHandler.SetupGet(p => p.HasErrors).Returns(true);
+            _mockValidationExceptionHandler.SetupGet(p => p.Errors)
+                .Returns(new List<string> { "Bad email - invalid.com" });
 
             // Act
             var result = _controller.Create(request);
 
-            // Assert - Expected Exception
+            // Assert
+            Assert.IsInstanceOfType(result.Result, typeof(BadRequestObjectResult));
+            var badObject = (BadRequestObjectResult)result.Result;
+
+            Assert.IsInstanceOfType(badObject.Value, typeof(UserCreationResponse));
+            var response = (UserCreationResponse)badObject.Value;
+
+            _mockValidationExceptionHandler.Verify(m => m.Add(It.IsAny<ValidationException>()), Times.Once);
+
+            Assert.AreEqual(0, response.Id);
+            Assert.AreEqual(1, response.Errors.Count());
+            CollectionAssert.Contains(response.Errors.ToList(), "Bad email - invalid.com");
         }
 
         [TestMethod]
-        [ExpectedException(typeof(BadEmailException))]
-        public void CreateRaisesBadEmailExceptionWhenEmailMissing()
+        public void CreateRespondsWithErrorWhenEmailMissing()
         {
             // Arrange
             var request = new UserCreationRequest
@@ -133,21 +167,65 @@ namespace UsersRestApi.UnitTest
                 Name = "noemail",
                 Password = "password"
             };
+            _mockValidationExceptionHandler.SetupGet(p => p.HasErrors).Returns(true);
+            _mockValidationExceptionHandler.SetupGet(p => p.Errors)
+                .Returns(new List<string> { "Bad email - " });
 
             // Act
             var result = _controller.Create(request);
 
-            // Assert - Expected Exception
+            // Assert
+            Assert.IsInstanceOfType(result.Result, typeof(BadRequestObjectResult));
+            var badObject = (BadRequestObjectResult)result.Result;
+
+            Assert.IsInstanceOfType(badObject.Value, typeof(UserCreationResponse));
+            var response = (UserCreationResponse)badObject.Value;
+
+            _mockValidationExceptionHandler.Verify(m => m.Add(It.IsAny<ValidationException>()), Times.Once);
+
+            Assert.AreEqual(0, response.Id);
+            Assert.AreEqual(1, response.Errors.Count());
+            CollectionAssert.Contains(response.Errors.ToList(), "Bad email - ");
         }
 
         [TestMethod]
-        [ExpectedException(typeof(NotUniqueEmailAddress))]
-        public void CreateRaisesNotUniqueEmailAddressWhenEmailAlreadyRegistered()
+        public void CreateRespondsWithErrorsWhenEmailAndPasswordMissing()
         {
             // Arrange
-            var value = new Email("1@example.com");
-            _mockUserFactory.Setup(m => m.Create(It.IsAny<string>(), value, It.IsAny<Password>(), _mockValidationExceptionHandler.Object))
-                .Throws(new NotUniqueEmailAddress(value));
+            var request = new UserCreationRequest
+            {
+                Name = "missing",
+            };
+            _mockValidationExceptionHandler.SetupGet(p => p.HasErrors).Returns(true);
+            _mockValidationExceptionHandler.SetupGet(p => p.Errors)
+                .Returns(new List<string> { "Password too weak", "Bad email - " });
+
+            // Act
+            var result = _controller.Create(request);
+
+            // Assert
+            Assert.IsInstanceOfType(result.Result, typeof(BadRequestObjectResult));
+            var badObject = (BadRequestObjectResult)result.Result;
+
+            Assert.IsInstanceOfType(badObject.Value, typeof(UserCreationResponse));
+            var response = (UserCreationResponse)badObject.Value;
+
+            _mockValidationExceptionHandler.Verify(m => m.Add(It.IsAny<ValidationException>()), Times.Exactly(2));
+
+            Assert.AreEqual(0, response.Id);
+            Assert.AreEqual(2, response.Errors.Count());
+            CollectionAssert.Contains(response.Errors.ToList(), "Password too weak");
+            CollectionAssert.Contains(response.Errors.ToList(), "Bad email - ");
+        }
+
+        [TestMethod]
+        public void CreateRespondsWithBadRequestWhenEmailAlreadyRegistered()
+        {
+            // Arrange
+            _mockUserFactory.Setup(m => m.Create(It.IsAny<string>(), It.IsAny<Email>(), It.IsAny<Password>(), _mockValidationExceptionHandler.Object))
+                .Returns(new Maybe<User>());
+            _mockValidationExceptionHandler.SetupGet(p => p.Errors)
+                .Returns(new List<string> { "Not unique email address - 1@example.com" });
 
             var request = new UserCreationRequest
             {
@@ -159,7 +237,16 @@ namespace UsersRestApi.UnitTest
             // Act
             var result = _controller.Create(request);
 
-            // Assert - Expected Exception
+            // Assert
+            Assert.IsInstanceOfType(result.Result, typeof(BadRequestObjectResult));
+            var badObject = (BadRequestObjectResult)result.Result;
+
+            Assert.IsInstanceOfType(badObject.Value, typeof(UserCreationResponse));
+            var response = (UserCreationResponse)badObject.Value;
+
+            Assert.AreEqual(0, response.Id);
+            Assert.AreEqual(1, response.Errors.Count());
+            CollectionAssert.Contains(response.Errors.ToList(), "Not unique email address - 1@example.com");
         }        
     }
 }
