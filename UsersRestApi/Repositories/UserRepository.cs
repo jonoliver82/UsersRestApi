@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using UsersRestApi.Core;
 using UsersRestApi.Domain;
 using UsersRestApi.Interfaces;
 using UsersRestApi.Models;
@@ -32,17 +33,25 @@ namespace UsersRestApi.Repositories
 
         public bool Any(IQuery<User> query)
         {
-            return _context.Set<User>().Any(query.Criteria);
+            return Any(query.Criteria);
         }
 
-        public User SingleOrDefault(Expression<Func<User, bool>> predicate)
+        public Maybe<User> Read(Expression<Func<User, bool>> predicate)
         {
-            return _context.Set<User>().SingleOrDefault(predicate);
+            var user = _context.Set<User>().SingleOrDefault(predicate);
+            if (user != null)
+            {
+                return new Maybe<User>(user);
+            }
+            else
+            {
+                return new Maybe<User>();
+            }
         }
 
-        public User SingleOrDefault(IQuery<User> query)
+        public Maybe<User> Read(IQuery<User> query)
         {
-            return _context.Set<User>().SingleOrDefault(query.Criteria);
+            return Read(query.Criteria);
         }
     }
 }

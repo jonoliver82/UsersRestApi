@@ -67,6 +67,36 @@ namespace UsersRestApi.UnitTest
         }
 
         [TestMethod]
+        public void CreateReturnsCreatedWhenValidData()
+        {
+            // Arrange
+            var request = new UserCreationRequest
+            {
+                Email = "new@example.com",
+                Name = "NewUser",
+                Password = "strongpassword"
+            };
+            _mockValidationExceptionHandler.SetupGet(p => p.HasErrors).Returns(false);
+            _mockUserFactory.Setup(m => m.Create(It.IsAny<string>(), It.IsAny<Email>(), It.IsAny<Password>(), _mockValidationExceptionHandler.Object))
+                .Returns(new Maybe<User>(new User("NewUser", new Email("new@example.com"), new Password("strongpassword"))));
+            
+            // Act
+            var result = _controller.Create(request);
+
+            // Assert
+            Assert.IsInstanceOfType(result.Result, typeof(CreatedAtActionResult));
+            var createdObject = (CreatedAtActionResult)result.Result;
+
+            Assert.IsInstanceOfType(createdObject.Value, typeof(UserCreationResponse));
+            var response = (UserCreationResponse)createdObject.Value;
+
+            Assert.AreEqual(0, response.Id);
+            Assert.AreEqual(0, response.Errors.Count());
+
+            _mockUserRepository.Verify(m => m.Add(It.IsAny<User>()), Times.Once);
+        }
+
+        [TestMethod]
         public void CreateRepsondsWithErrorWhenNoPassword()
         {
             // Arrange

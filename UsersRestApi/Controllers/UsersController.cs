@@ -8,6 +8,7 @@ using UsersRestApi.Domain;
 using UsersRestApi.Factories;
 using UsersRestApi.Interfaces;
 using UsersRestApi.Models;
+using UsersRestApi.Queries;
 using UsersRestApi.Validaters;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -73,7 +74,7 @@ namespace UsersRestApi.Controllers
         {
             // Visitor: validationExceptionHandler
             // Visitee: value objects
-            // TODO pass in a validator instead
+            // TODO consider pass in a validator instead
             Email.Accept(request.Email, _validationExceptionHandler);
             Password.Accept(request.Password, _validationExceptionHandler);
 

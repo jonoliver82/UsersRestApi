@@ -7,10 +7,7 @@ This project shows examples of the following concepts:
 * Query objects to encapsulate predicate and selection expressions when performing a query to a Repository
 * Use of Specification pattern inconjunction with Queries and validation of Entities
 * Validation of Value Objects and collection of validation errors by the Visitor pattern
-* Maybe pattern on creation and retrieval
-
-TODO
-* Chain of Responsibility
+* Maybe Functor on creation and retrieval
 
 The project incorporates ideas from:
 * [Entity types with constructors](https://docs.microsoft.com/en-us/ef/core/modeling/constructors)

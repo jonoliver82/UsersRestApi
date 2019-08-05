@@ -41,6 +41,9 @@ namespace UsersRestApi.Core
             return _hasItem ? _item.GetHashCode() : 0;
         }
 
+        /// <summary>
+        /// Override to permit explicit action on empty and present
+        /// </summary>
         public TResult Select<TResult>(Func<TResult> empty, Func<T, TResult> present)
         {
             if (present == null)
@@ -49,6 +52,26 @@ namespace UsersRestApi.Core
             }
 
             return _hasItem ? present(_item) : empty();
+        }
+
+        /// <summary>
+        /// Composable func for fluent usage
+        /// </summary>
+        public Maybe<TResult> Select<TResult>(Func<T, TResult> selector)
+        {
+            if (selector == null)
+            {
+                throw new ArgumentNullException(nameof(selector));
+            }
+
+            if (_hasItem)
+            {
+                return new Maybe<TResult>(selector(_item));
+            }
+            else
+            {
+                return new Maybe<TResult>();
+            }
         }
     }
 }

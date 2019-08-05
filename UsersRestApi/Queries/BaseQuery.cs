@@ -32,10 +32,5 @@ namespace UsersRestApi.Queries
         {
             IncludeStrings.Add(includeString);
         }
-
-        //public bool IsSatisfiedBy(T entity)
-        //{
-        //    return Criteria.Compile().Invoke(entity);
-        //}
     }
 }

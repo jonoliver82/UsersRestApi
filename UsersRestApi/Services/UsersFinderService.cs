@@ -22,15 +22,11 @@ namespace UsersRestApi.Services
 
         public Maybe<Email> FindUserEmailById(int id)
         {
-            var user = _repository.SingleOrDefault(new UserIdQuery(id));
-            if (user != null)
-            {
-                return new Maybe<Email>(user.Email);
-            }
-            else
-            {
-                return new Maybe<Email>();
-            }
+            // Use the Composable overload rather than needing to explicitly define funcs ie
+            // var maybeUser = _repository.SingleOrDefault(new UserIdQuery(id));
+            // return maybeUser.Select(empty: () => new Maybe<Email>(),
+            //      present: (user) => new Maybe<Email>(user.Email));
+            return _repository.Read(new UserIdQuery(id)).Select(a => a.Email);
         }
     }
 }
