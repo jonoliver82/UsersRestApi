@@ -1,7 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿// **********************************************************************************
+// Filename					- MatchingEmailQuery.cs
+// Copyright (c) jonoliver82, 2019
+// **********************************************************************************
+
 using UsersRestApi.Domain;
 using UsersRestApi.Models;
 

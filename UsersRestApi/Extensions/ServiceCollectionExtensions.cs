@@ -1,9 +1,9 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿// **********************************************************************************
+// Filename					- ServiceCollectionExtensions.cs
+// Copyright (c) jonoliver82, 2019
+// **********************************************************************************
+
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using UsersRestApi.Factories;
 using UsersRestApi.Interfaces;
 using UsersRestApi.Repositories;

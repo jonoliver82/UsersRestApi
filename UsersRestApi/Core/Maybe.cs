@@ -1,7 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿// **********************************************************************************
+// Filename					- Maybe.cs
+// Copyright (c) jonoliver82, 2019
+// **********************************************************************************
+
+using System;
 
 namespace UsersRestApi.Core
 {
@@ -42,7 +44,7 @@ namespace UsersRestApi.Core
         }
 
         /// <summary>
-        /// Override to permit explicit action on empty and present
+        /// Override to permit explicit action on empty and present.
         /// </summary>
         public TResult Select<TResult>(Func<TResult> empty, Func<T, TResult> present)
         {
@@ -55,7 +57,7 @@ namespace UsersRestApi.Core
         }
 
         /// <summary>
-        /// Composable func for fluent usage
+        /// Composable func for fluent usage.
         /// </summary>
         public Maybe<TResult> Select<TResult>(Func<T, TResult> selector)
         {

@@ -1,10 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿// **********************************************************************************
+// Filename					- IUserRepository.cs
+// Copyright (c) jonoliver82, 2019
+// **********************************************************************************
+
+using System;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 using UsersRestApi.Core;
-using UsersRestApi.Domain;
 using UsersRestApi.Models;
 
 namespace UsersRestApi.Interfaces

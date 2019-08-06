@@ -16,10 +16,11 @@ namespace UsersRestApi.IntegrationTest
     /// See https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-2.2
     /// </summary>
     [TestClass]
-    public class UsersControllerTests 
+    public class UsersControllerTests
     {
         private WebApplicationFactory<UsersRestApi.Startup> _factory;
         private HttpClient _client;
+        private static readonly Uri BASE_URI = new Uri("/api/users", UriKind.Relative);
 
         [TestInitialize]
         public void TestInitialize()
@@ -34,7 +35,7 @@ namespace UsersRestApi.IntegrationTest
             // Arrange
 
             // Act
-            var response = await _client.GetAsync("/api/users/1");
+            var response = await _client.GetAsync(new Uri("/api/users/1", UriKind.Relative));
 
             // Assert
             response.EnsureSuccessStatusCode();
@@ -49,7 +50,7 @@ namespace UsersRestApi.IntegrationTest
             // Arrange
 
             // Act
-            var response = await _client.GetAsync("/api/users/5");
+            var response = await _client.GetAsync(new Uri("/api/users/5", UriKind.Relative));
 
             // Assert
             Assert.IsFalse(response.IsSuccessStatusCode);
@@ -69,7 +70,7 @@ namespace UsersRestApi.IntegrationTest
             var json = JsonConvert.SerializeObject(request);
 
             // Act
-            var response = await _client.PostAsync("/api/users", new StringContent(json, Encoding.UTF8, "application/json"));
+            var response = await _client.PostAsync(BASE_URI, new StringContent(json, Encoding.UTF8, "application/json"));
 
             // Assert
             Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
@@ -93,7 +94,7 @@ namespace UsersRestApi.IntegrationTest
             var json = JsonConvert.SerializeObject(request);
 
             // Act
-            var response = await _client.PostAsync("/api/users", new StringContent(json, Encoding.UTF8, "application/json"));
+            var response = await _client.PostAsync(BASE_URI, new StringContent(json, Encoding.UTF8, "application/json"));
 
             // Assert
             Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
@@ -118,7 +119,7 @@ namespace UsersRestApi.IntegrationTest
             var json = JsonConvert.SerializeObject(request);
 
             // Act
-            var response = await _client.PostAsync("/api/users", new StringContent(json, Encoding.UTF8, "application/json"));
+            var response = await _client.PostAsync(BASE_URI, new StringContent(json, Encoding.UTF8, "application/json"));
 
             // Assert
             Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
@@ -142,7 +143,7 @@ namespace UsersRestApi.IntegrationTest
             var json = JsonConvert.SerializeObject(request);
 
             // Act
-            var response = await _client.PostAsync("/api/users", new StringContent(json, Encoding.UTF8, "application/json"));
+            var response = await _client.PostAsync(BASE_URI, new StringContent(json, Encoding.UTF8, "application/json"));
 
             // Assert
             Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
@@ -152,7 +153,5 @@ namespace UsersRestApi.IntegrationTest
             Assert.AreEqual(1, result.Errors.Count());
             CollectionAssert.Contains(result.Errors.ToList(), "Not unique email address - 1@example.com");
         }
-
-
     }
 }

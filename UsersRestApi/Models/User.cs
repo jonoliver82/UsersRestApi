@@ -1,15 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿// **********************************************************************************
+// Filename					- User.cs
+// Copyright (c) jonoliver82, 2019
+// **********************************************************************************
+
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 using UsersRestApi.Domain;
 using UsersRestApi.Interfaces;
 
 namespace UsersRestApi.Models
 {
     /// <summary>
-    /// Entity owns properties of value object types
+    /// Entity owns properties of value object types.
     /// </summary>
     public class User : IIdentifiable
     {

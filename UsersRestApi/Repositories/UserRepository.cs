@@ -1,13 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿// **********************************************************************************
+// Filename					- UserRepository.cs
+// Copyright (c) jonoliver82, 2019
+// **********************************************************************************
+
+using System;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 using UsersRestApi.Core;
-using UsersRestApi.Domain;
 using UsersRestApi.Interfaces;
 using UsersRestApi.Models;
-using UsersRestApi.Specifications;
 
 namespace UsersRestApi.Repositories
 {
@@ -26,7 +27,7 @@ namespace UsersRestApi.Repositories
             _context.SaveChanges();
         }
 
-        public bool Any(Expression<Func<User,bool>> predicate)
+        public bool Any(Expression<Func<User, bool>> predicate)
         {
             return _context.Set<User>().Any(predicate);
         }

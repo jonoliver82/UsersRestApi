@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿// **********************************************************************************
+// Filename					- UserFactory.cs
+// Copyright (c) jonoliver82, 2019
+// **********************************************************************************
+
 using UsersRestApi.Core;
 using UsersRestApi.Domain;
 using UsersRestApi.Exceptions;
 using UsersRestApi.Interfaces;
 using UsersRestApi.Models;
-using UsersRestApi.Queries;
 using UsersRestApi.Specifications;
-using UsersRestApi.Validaters;
 
 namespace UsersRestApi.Factories
 {
@@ -30,7 +29,7 @@ namespace UsersRestApi.Factories
                 return new Maybe<User>(new User(name, email, password));
             }
 
-            validationExceptionHandler.Add(new NotUniqueEmailAddress(email));
+            validationExceptionHandler.Add(new NotUniqueEmailAddressException(email));
             return new Maybe<User>();
         }
     }

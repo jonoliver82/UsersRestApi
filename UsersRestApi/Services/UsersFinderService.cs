@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿// **********************************************************************************
+// Filename					- UsersFinderService.cs
+// Copyright (c) jonoliver82, 2019
+// **********************************************************************************
+
 using UsersRestApi.Core;
 using UsersRestApi.Domain;
 using UsersRestApi.Interfaces;
-using UsersRestApi.Models;
 using UsersRestApi.Queries;
-using UsersRestApi.Specifications;
 
 namespace UsersRestApi.Services
 {

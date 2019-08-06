@@ -1,23 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿// **********************************************************************************
+// Filename					- Startup.cs
+// Copyright (c) jonoliver82, 2019
+// **********************************************************************************
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using UsersRestApi.Extensions;
-using UsersRestApi.Factories;
-using UsersRestApi.Interfaces;
 using UsersRestApi.Models;
-using UsersRestApi.Repositories;
-using UsersRestApi.Services;
-using UsersRestApi.Validaters;
 
 namespace UsersRestApi
 {
@@ -65,6 +58,7 @@ namespace UsersRestApi
             using (var scope = app.ApplicationServices.CreateScope())
             {
                 var context = scope.ServiceProvider.GetService<UsersContext>();
+
                 // Ensure the HasData() methods in the context are executed
                 context.Database.EnsureCreated();
             }

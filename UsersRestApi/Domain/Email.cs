@@ -1,16 +1,17 @@
-﻿using System;
+﻿// **********************************************************************************
+// Filename					- Email.cs
+// Copyright (c) jonoliver82, 2019
+// **********************************************************************************
+
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using UsersRestApi.Exceptions;
 using UsersRestApi.Interfaces;
-using UsersRestApi.Validaters;
 
 namespace UsersRestApi.Domain
 {
     /// <summary>
-    /// A value object
+    /// A value object.
     /// </summary>
     public class Email : ValueObject
     {
@@ -18,7 +19,7 @@ namespace UsersRestApi.Domain
 
         public Email(string address)
         {
-            if(!IsValidAddress(address))
+            if (!IsValidAddress(address))
             {
                 throw new BadEmailException(address);
             }

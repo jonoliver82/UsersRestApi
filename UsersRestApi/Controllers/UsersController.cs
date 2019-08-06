@@ -1,23 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿// **********************************************************************************
+// Filename					- UsersController.cs
+// Copyright (c) jonoliver82, 2019
+// **********************************************************************************
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using UsersRestApi.Domain;
-using UsersRestApi.Factories;
 using UsersRestApi.Interfaces;
 using UsersRestApi.Models;
-using UsersRestApi.Queries;
-using UsersRestApi.Validaters;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace UsersRestApi.Controllers
 {
     /// <summary>
     /// See https://blog.pragmatists.com/visit-your-domain-objects-to-keep-em-legit-6b5d43e98ef0
-    /// And https://github.com/Pragmatists/DDD-validation/blob/master/src/main/java/com/ddd/validation/application/UsersEndpoint.java
+    /// And https://github.com/Pragmatists/DDD-validation/blob/master/src/main/java/com/ddd/validation/application/UsersEndpoint.java.
     /// </summary>
     [Route("api/[controller]")]
     public class UsersController : Controller
@@ -40,12 +36,10 @@ namespace UsersRestApi.Controllers
 
         /// <summary>
         /// Get the email address of a registered user
-        /// 
-        /// GET api/<controller>/5
-        /// GET https://localhost:44357/api/users/1
+        ///
+        /// GET api/{controller}/5
+        /// GET https://localhost:44357/api/users/1.
         /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
         [HttpGet("{id}")]
         public ActionResult<Email> GetEmail(int id)
         {
@@ -56,10 +50,8 @@ namespace UsersRestApi.Controllers
         }
 
         /// <summary>
-        /// Register a new user
-        /// 
-        /// POST api/<controller>
-        /// 
+        /// Registers a new user.
+        ///
         /// POST https://localhost:44357/api/users
         /// application/json
         /// {
@@ -67,6 +59,8 @@ namespace UsersRestApi.Controllers
         ///   "Email":"email@example.com",
         ///   "Password":"password"
         /// }
+        ///
+        /// POST api/{controller}.
         /// </summary>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -84,9 +78,9 @@ namespace UsersRestApi.Controllers
             }
 
             // Note we dont visit the factory method until after the value objects have been created
-            var maybeUser = _userFactory.Create(request.Name, 
-                new Email(request.Email), 
-                new Password(request.Password), 
+            var maybeUser = _userFactory.Create(request.Name,
+                new Email(request.Email),
+                new Password(request.Password),
                 _validationExceptionHandler);
 
             return maybeUser.Select<ActionResult>(
@@ -95,7 +89,7 @@ namespace UsersRestApi.Controllers
                 {
                     _userRepository.Add(user);
                     return CreatedAtAction(nameof(GetEmail), new { id = user.Id }, UserCreationResponse.Success(user.Id));
-                });                     
+                });
         }
     }
 }

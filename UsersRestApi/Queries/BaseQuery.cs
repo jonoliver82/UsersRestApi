@@ -1,15 +1,18 @@
-﻿using System;
+﻿// **********************************************************************************
+// Filename					- BaseQuery.cs
+// Copyright (c) jonoliver82, 2019
+// **********************************************************************************
+
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 using UsersRestApi.Interfaces;
 
 namespace UsersRestApi.Queries
 {
     public abstract class BaseQuery<T> : IQuery<T>
     {
-        public BaseQuery(Expression<Func<T, bool>> criteria)
+        protected BaseQuery(Expression<Func<T, bool>> criteria)
         {
             Criteria = criteria;
         }
@@ -26,7 +29,7 @@ namespace UsersRestApi.Queries
         }
 
         /// <summary>
-        /// String-based includes allow for including children of children, e.g. Basket.Items.Product
+        /// String-based includes allow for including children of children, e.g. Basket.Items.Product.
         /// </summary>
         protected virtual void AddInclude(string includeString)
         {

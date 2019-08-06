@@ -11,6 +11,11 @@ namespace UsersRestApi.UnitTest.Helpers
         public static T IsOkResult<T>(ActionResult<T> result)
              where T : class
         {
+            if (result == null)
+            {
+                Assert.Fail("Result is null");
+            }
+
             Assert.IsInstanceOfType(result.Result, typeof(OkObjectResult));
             var okObject = result.Result as OkObjectResult;
 

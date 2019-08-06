@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
+﻿// **********************************************************************************
+// Filename					- Program.cs
+// Copyright (c) jonoliver82, 2019
+// **********************************************************************************
+
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 
 namespace UsersRestApi
 {
-    public class Program
+    public static class Program
     {
         public static void Main(string[] args)
         {

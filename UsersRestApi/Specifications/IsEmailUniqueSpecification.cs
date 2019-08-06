@@ -1,7 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿// **********************************************************************************
+// Filename					- IsEmailUniqueSpecification.cs
+// Copyright (c) jonoliver82, 2019
+// **********************************************************************************
+
 using UsersRestApi.Domain;
 using UsersRestApi.Interfaces;
 using UsersRestApi.Queries;
@@ -17,9 +18,9 @@ namespace UsersRestApi.Specifications
             _userRepository = userRepository;
         }
 
-        public bool IsSatisfiedBy(Email email)
+        public bool IsSatisfiedBy(Email entity)
         {
-            return !_userRepository.Any(new MatchingEmailQuery(email));
+            return !_userRepository.Any(new MatchingEmailQuery(entity));
         }
     }
 }

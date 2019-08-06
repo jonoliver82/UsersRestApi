@@ -1,9 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using UsersRestApi.Domain;
+﻿// **********************************************************************************
+// Filename					- UsersContext.cs
+// Copyright (c) jonoliver82, 2019
+// **********************************************************************************
+
+using Microsoft.EntityFrameworkCore;
 using UsersRestApi.Infrastructure;
 
 namespace UsersRestApi.Models
@@ -18,7 +18,7 @@ namespace UsersRestApi.Models
         public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {            
+        {
             modelBuilder.Entity<User>(b =>
             {
                 // See https://github.com/aspnet/EntityFrameworkCore/issues/6872
@@ -34,7 +34,7 @@ namespace UsersRestApi.Models
                 });
 
                 // Value Object types are not entities
-                // Must use anonymous type to initialise as value object does not have foreign key UserId         
+                // Must use anonymous type to initialise as value object does not have foreign key UserId
                 // Seed with HasData
                 b.OwnsOne(e => e.Email).HasData(new
                 {

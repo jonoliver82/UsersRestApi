@@ -1,59 +1,19 @@
-﻿using System;
+﻿// **********************************************************************************
+// Filename					- ValueObject.cs
+// Copyright (c) jonoliver82, 2019
+// **********************************************************************************
+
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace UsersRestApi.Domain
 {
-    //https://github.com/dotnet-architecture/eShopOnContainers/blob/dev/src/Services/Ordering/Ordering.Domain/SeedWork/ValueObject.cs
+    // https://github.com/dotnet-architecture/eShopOnContainers/blob/dev/src/Services/Ordering/Ordering.Domain/SeedWork/ValueObject.cs
     public abstract class ValueObject
     {
-        protected static bool EqualOperator(ValueObject left, ValueObject right)
-        {
-            if (ReferenceEquals(left, null) ^ ReferenceEquals(right, null))
-            {
-                return false;
-            }
-            return ReferenceEquals(left, null) || left.Equals(right);
-        }
-
-        protected static bool NotEqualOperator(ValueObject left, ValueObject right)
-        {
-            return !EqualOperator(left, right);
-        }
-
-        protected abstract IEnumerable<object> GetAtomicValues();
-
-        public override bool Equals(object obj)
-        {
-            if (obj == null || obj.GetType() != GetType())
-            {
-                return false;
-            }
-            ValueObject other = (ValueObject)obj;
-            IEnumerator<object> thisValues = GetAtomicValues().GetEnumerator();
-            IEnumerator<object> otherValues = other.GetAtomicValues().GetEnumerator();
-            while(thisValues.MoveNext() && otherValues.MoveNext())
-            {
-                if (ReferenceEquals(thisValues.Current, null) ^ ReferenceEquals(otherValues.Current, null))
-                {
-                    return false;
-                }
-                if (thisValues.Current != null && !thisValues.Current.Equals(otherValues.Current))
-                {
-                    return false;
-                }
-            }
-
-            return !thisValues.MoveNext() && !otherValues.MoveNext();
-        }
-
         /// <summary>
-        /// Equals is overrriden, therefore we must overload the equality operator
+        /// Equals is overrriden, therefore we must overload the equality operator.
         /// </summary>
-        /// <param name="a"></param>
-        /// <param name="b"></param>
-        /// <returns></returns>
         public static bool operator ==(ValueObject a, ValueObject b)
         {
             if (ReferenceEquals(a, null) && ReferenceEquals(b, null))
@@ -70,17 +30,44 @@ namespace UsersRestApi.Domain
         }
 
         /// <summary>
-        /// Required as we overload the equality operator
+        /// Required as we overload the equality operator.
         /// </summary>
         public static bool operator !=(ValueObject a, ValueObject b)
         {
             return !(a == b);
         }
-        
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null || obj.GetType() != GetType())
+            {
+                return false;
+            }
+
+            ValueObject other = (ValueObject)obj;
+            IEnumerator<object> thisValues = GetAtomicValues().GetEnumerator();
+            IEnumerator<object> otherValues = other.GetAtomicValues().GetEnumerator();
+
+            while (thisValues.MoveNext() && otherValues.MoveNext())
+            {
+                if (ReferenceEquals(thisValues.Current, null) ^ ReferenceEquals(otherValues.Current, null))
+                {
+                    return false;
+                }
+
+                if (thisValues.Current != null && !thisValues.Current.Equals(otherValues.Current))
+                {
+                    return false;
+                }
+            }
+
+            return !thisValues.MoveNext() && !otherValues.MoveNext();
+        }
+
         /// <summary>
         /// Types that override Equals must also override GetHashCode; otherwise, hash tables
-        /// might not work correctly
-        /// </summary>        
+        /// might not work correctly.
+        /// </summary>
         public override int GetHashCode()
         {
             return GetAtomicValues()
@@ -90,7 +77,24 @@ namespace UsersRestApi.Domain
 
         public ValueObject GetCopy()
         {
-            return this.MemberwiseClone() as ValueObject;
+            return MemberwiseClone() as ValueObject;
         }
+
+        protected static bool EqualOperator(ValueObject left, ValueObject right)
+        {
+            if (ReferenceEquals(left, null) ^ ReferenceEquals(right, null))
+            {
+                return false;
+            }
+
+            return ReferenceEquals(left, null) || left.Equals(right);
+        }
+
+        protected static bool NotEqualOperator(ValueObject left, ValueObject right)
+        {
+            return !EqualOperator(left, right);
+        }
+
+        protected abstract IEnumerable<object> GetAtomicValues();
     }
 }

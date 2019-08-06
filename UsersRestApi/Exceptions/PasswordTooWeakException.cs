@@ -1,7 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿// **********************************************************************************
+// Filename					- PasswordTooWeakException.cs
+// Copyright (c) jonoliver82, 2019
+// **********************************************************************************
+
+using System;
 
 namespace UsersRestApi.Exceptions
 {
@@ -9,6 +11,16 @@ namespace UsersRestApi.Exceptions
     {
         public PasswordTooWeakException()
             : base("Password too weak")
+        {
+        }
+
+        public PasswordTooWeakException(string message)
+            : base(message)
+        {
+        }
+
+        public PasswordTooWeakException(string message, Exception innerException)
+            : base(message, innerException)
         {
         }
     }

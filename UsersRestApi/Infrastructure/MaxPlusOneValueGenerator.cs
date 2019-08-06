@@ -1,10 +1,11 @@
-﻿using JetBrains.Annotations;
+﻿// **********************************************************************************
+// Filename					- MaxPlusOneValueGenerator.cs
+// Copyright (c) jonoliver82, 2019
+// **********************************************************************************
+
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.ValueGeneration;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using UsersRestApi.Interfaces;
 
 namespace UsersRestApi.Infrastructure
@@ -12,8 +13,8 @@ namespace UsersRestApi.Infrastructure
     /// <summary>
     /// See https://github.com/aspnet/EntityFrameworkCore/issues/6872
     /// Work around an issue with InMemoryProvider not taking into account seeded data
-    /// when generating a new identity
-    /// </summary>    
+    /// when generating a new identity.
+    /// </summary>
     public class MaxPlusOneValueGenerator<TEntity> : ValueGenerator<int>
         where TEntity : class, IIdentifiable
     {
@@ -27,6 +28,7 @@ namespace UsersRestApi.Infrastructure
             {
                 max = data.Max(a => a.Id);
             }
+
             return max + 1;
         }
     }

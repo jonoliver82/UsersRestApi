@@ -1,15 +1,16 @@
-﻿using System;
+﻿// **********************************************************************************
+// Filename					- Password.cs
+// Copyright (c) jonoliver82, 2019
+// **********************************************************************************
+
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using UsersRestApi.Exceptions;
 using UsersRestApi.Interfaces;
-using UsersRestApi.Validaters;
 
 namespace UsersRestApi.Domain
 {
     /// <summary>
-    /// A value object
+    /// A value object.
     /// </summary>
     public class Password : ValueObject
     {
@@ -35,6 +36,7 @@ namespace UsersRestApi.Domain
                 validationExceptionHandler.Add(new PasswordTooWeakException());
             }
         }
+
         public override string ToString()
         {
             return Value;

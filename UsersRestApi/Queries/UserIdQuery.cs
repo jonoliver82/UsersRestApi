@@ -1,7 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿// **********************************************************************************
+// Filename					- UserIdQuery.cs
+// Copyright (c) jonoliver82, 2019
+// **********************************************************************************
+
 using UsersRestApi.Models;
 
 namespace UsersRestApi.Queries
