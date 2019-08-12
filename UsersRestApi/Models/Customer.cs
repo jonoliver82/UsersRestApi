@@ -9,6 +9,10 @@ namespace UsersRestApi.Models
 {
     public class Customer : IIdentifiable
     {
+        public Customer()
+        {
+        }
+
         public Customer(CustomerName name)
         {
             Name = name;

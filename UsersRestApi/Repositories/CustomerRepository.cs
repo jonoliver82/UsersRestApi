@@ -21,7 +21,7 @@ namespace UsersRestApi.Repositories
         {
             _context.Customers.Add(customer);
             _context.SaveChanges();
-            return Result.Ok();
+            return Result.Fail("test");
         }
     }
 }

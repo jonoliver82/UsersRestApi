@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using UsersRestApi.Core;
 using UsersRestApi.Domain;
+using UsersRestApi.Extensions;
 using UsersRestApi.Interfaces;
 using UsersRestApi.Models;
 
@@ -26,6 +27,9 @@ namespace UsersRestApi.Controllers
         private readonly IEmailSender _emailSender;
         private readonly ILogger _logger;
 
+        // TODO feature flags?
+        private bool _useFunctional = true;
+
         public CustomersController(ICustomerRepository customerRepository,
             IPaymentGateway paymentGateway,
             IEmailSender emailSender,
@@ -40,6 +44,35 @@ namespace UsersRestApi.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         public HttpResponseMessage CreateCustomer([FromBody]CustomerCreationRequest request)
+        {
+            if (_useFunctional)
+            {
+                return CreateCustomerFunctional(request);
+            }
+            else
+            {
+                return CreateCustomerTraditional(request);
+            }
+        }
+
+        private HttpResponseMessage CreateCustomerFunctional(CustomerCreationRequest request)
+        {
+            Result<CustomerName> customerNameResult = CustomerName.Create(request.Name);
+            Result<BillingInfo> billingInfoResult = BillingInfo.Create(request.BillingInfo);
+
+            // If _customerRepository.Save returns Error, then OnFailure() is called, then the OnBoth() functions
+            // the interim OnSuccess() for SendGreetings is not called
+            return Result.Combine(billingInfoResult, customerNameResult)
+                .OnSuccess(() => _paymentGateway.ChargeCommission(billingInfoResult.Value))
+                .OnSuccess(() => new Customer(customerNameResult.Value))
+                .OnSuccess(customer => _customerRepository.Save(customer)
+                    .OnFailure(() => _paymentGateway.RollbackLastTransaction()))
+                .OnSuccess(() => _emailSender.SendGreetings(customerNameResult.Value))
+                .OnBoth(result => Log(result))
+                .OnBoth(result => CreateResponseMessage(result));
+        }
+
+        private HttpResponseMessage CreateCustomerTraditional(CustomerCreationRequest request)
         {
             Result<CustomerName> customerNameResult = CustomerName.Create(request.Name);
             if (customerNameResult.Failure)
@@ -74,6 +107,23 @@ namespace UsersRestApi.Controllers
             _emailSender.SendGreetings(customerNameResult.Value);
 
             return new HttpResponseMessage(HttpStatusCode.OK);
+        }
+
+        private void Log(Result result)
+        {
+            _logger.LogInformation(result.Error);
+        }
+
+        private HttpResponseMessage CreateResponseMessage(Result result)
+        {
+            if (result.Failure)
+            {
+                return Error(result.Error);
+            }
+            else
+            {
+                return new HttpResponseMessage(HttpStatusCode.OK);
+            }
         }
 
         private static HttpResponseMessage Error(string value)
