@@ -1,5 +1,5 @@
 ﻿// **********************************************************************************
-// Filename					- UsersContext.cs
+// Filename					- SampleContext.cs
 // Copyright (c) jonoliver82, 2019
 // **********************************************************************************
 
@@ -8,14 +8,16 @@ using UsersRestApi.Infrastructure;
 
 namespace UsersRestApi.Models
 {
-    public class UsersContext : DbContext
+    public class SampleContext : DbContext
     {
-        public UsersContext(DbContextOptions<UsersContext> options)
+        public SampleContext(DbContextOptions<SampleContext> options)
             : base(options)
         {
         }
 
         public DbSet<User> Users { get; set; }
+
+        public DbSet<Customer> Customers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -47,6 +49,11 @@ namespace UsersRestApi.Models
                     UserId = 1,
                     Value = "password",
                 });
+            });
+
+            modelBuilder.Entity<Customer>(b =>
+            {
+                b.OwnsOne(e => e.Name);
             });
         }
     }

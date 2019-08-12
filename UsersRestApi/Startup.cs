@@ -29,7 +29,7 @@ namespace UsersRestApi
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             // Add our Entity Framework Core database
-            services.AddDbContext<UsersContext>(opt => opt.UseInMemoryDatabase("Users"));
+            services.AddDbContext<SampleContext>(opt => opt.UseInMemoryDatabase("Users"));
 
             // Register our services for Dependency Injection
             services.RegisterFactories();
@@ -57,7 +57,7 @@ namespace UsersRestApi
             // Ensure InMemory database seeding
             using (var scope = app.ApplicationServices.CreateScope())
             {
-                var context = scope.ServiceProvider.GetService<UsersContext>();
+                var context = scope.ServiceProvider.GetService<SampleContext>();
 
                 // Ensure the HasData() methods in the context are executed
                 context.Database.EnsureCreated();

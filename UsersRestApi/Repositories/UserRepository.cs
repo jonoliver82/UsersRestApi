@@ -14,9 +14,9 @@ namespace UsersRestApi.Repositories
 {
     public class UserRepository : IUserRepository
     {
-        private readonly UsersContext _context;
+        private readonly SampleContext _context;
 
-        public UserRepository(UsersContext context)
+        public UserRepository(SampleContext context)
         {
             _context = context;
         }

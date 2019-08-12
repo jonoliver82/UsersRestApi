@@ -23,6 +23,7 @@ namespace UsersRestApi.Extensions
 
         public static IServiceCollection RegisterRepositories(this IServiceCollection services)
         {
+            services.AddScoped<ICustomerRepository, CustomerRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
 
             return services;
@@ -30,6 +31,8 @@ namespace UsersRestApi.Extensions
 
         public static IServiceCollection RegisterServices(this IServiceCollection services)
         {
+            services.AddScoped<IEmailSender, EmailSenderService>();
+            services.AddScoped<IPaymentGateway, PaymentGatewayService>();
             services.AddScoped<IUsersFinderService, UsersFinderService>();
 
             return services;
