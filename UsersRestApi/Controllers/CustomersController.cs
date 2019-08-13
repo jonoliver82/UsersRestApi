@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.FeatureManagement;
 using UsersRestApi.Core;
 using UsersRestApi.Domain;
 using UsersRestApi.Extensions;
@@ -26,26 +27,26 @@ namespace UsersRestApi.Controllers
         private readonly IPaymentGateway _paymentGateway;
         private readonly IEmailSender _emailSender;
         private readonly ILogger _logger;
-
-        // TODO feature flags?
-        private bool _useFunctional = true;
+        private readonly IFeatureManager _featureManager;
 
         public CustomersController(ICustomerRepository customerRepository,
             IPaymentGateway paymentGateway,
             IEmailSender emailSender,
-            ILogger<CustomersController> logger)
+            ILogger<CustomersController> logger,
+            IFeatureManager featureManager)
         {
             _customerRepository = customerRepository;
             _paymentGateway = paymentGateway;
             _emailSender = emailSender;
             _logger = logger;
+            _featureManager = featureManager;
         }
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         public HttpResponseMessage CreateCustomer([FromBody]CustomerCreationRequest request)
         {
-            if (_useFunctional)
+            if (_featureManager.IsEnabled(FeatureFlags.CustomerCreateFunctional))
             {
                 return CreateCustomerFunctional(request);
             }

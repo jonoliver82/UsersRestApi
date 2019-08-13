@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.FeatureManagement;
 using UsersRestApi.Extensions;
 using UsersRestApi.Models;
 
@@ -27,6 +28,8 @@ namespace UsersRestApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            services.AddFeatureManagement();
 
             // Add our Entity Framework Core database
             services.AddDbContext<SampleContext>(opt => opt.UseInMemoryDatabase("Users"));
